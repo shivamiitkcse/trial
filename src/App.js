@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
-import Container from 'react-bootstrap/Container';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import Header from './MyComponents/Header';
 import Todos from './MyComponents/Todos';
 import MyFooter from './MyComponents/MyFooter';
 import AddTodo from './MyComponents/AddTodo';
-
-// import {Planning} from './MyComponents/Planning'; // Ensure this is correctly defined or imported
+import Planning from './MyComponents/Planning'; // Ensure this is correctly defined or imported
 
 function BasicExample() {
+  // Initialize todos from local storage or as an empty array
+  const inittodo = localStorage.getItem("todos") ? JSON.parse(localStorage.getItem("todos")) : [];
+
+  const [todos, setTodos] = useState(inittodo);
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
+
   const onDelete = (todo) => {
     console.log("I am onDelete of todo", todo);
-    setTodos(todos.filter((e) => {
-      return e !== todo;
-    }));
+    setTodos(todos.filter((e) => e !== todo));
   };
 
   const addTodo = (title, desc) => {
@@ -33,31 +38,12 @@ function BasicExample() {
     console.log(myTodo);
   };
 
-  const [todos, setTodos] = useState([
-    {
-      sno: 1,
-      title: "Go to the market",
-      desc: "You need to go to the market to get this job done"
-    },
-    {
-      sno: 2,
-      title: "Go to the mall",
-      desc: "You need to go to the mall to get this job done"
-    },
-    {
-      sno: 3,
-      title: "Go to the gym",
-      desc: "You need to go to the gym to get this job done"
-    },
-  ]);
-
   return (
     <>
       <Header />
       <AddTodo addTodo={addTodo} /> {/* Corrected prop name */}
       <Todos todos={todos} onDelete={onDelete} />
-      {/* <Planning /> */}
-      {/* </Container> */}
+      <Planning />
       <MyFooter />
     </>
   );
